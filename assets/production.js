@@ -50,7 +50,13 @@
   }
   function validate(root){
     const errors=[];
-    root.querySelectorAll('input[type=number][required]').forEach(el=>{const n=Number(el.value),min=Number(el.min),max=Number(el.max),step=Number(el.step)||1;const invalid=!el.value||!Number.isFinite(n)||n<min||n>max||Math.abs((n-min)/step-Math.round((n-min)/step))>1e-8;if(invalid)errors.push(`${el.dataset.label||el.name}: ingresa un valor entre ${el.min} y ${el.max} (pasos de ${step}).`)});
+    root.querySelectorAll('input[type=number][required]').forEach(el=>{
+      const n=Number(el.value);
+      const min=el.min===''?-Infinity:Number(el.min);
+      const max=el.max===''?Infinity:Number(el.max);
+      const invalid=!el.value.trim()||!Number.isFinite(n)||n<min||n>max;
+      if(invalid)errors.push(`${el.dataset.label||el.name}: ingresa un valor entre ${el.min || '0'} y ${el.max || 'el límite permitido'}.`);
+    });
     const msg=root.querySelector('[data-production-errors]');msg.innerHTML=errors.map(e=>`<div class="notice danger">${esc(e)}</div>`).join('');msg.hidden=errors.length===0;return errors.length===0;
   }
   function render(root){
