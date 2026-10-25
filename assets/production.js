@@ -87,8 +87,13 @@
   }
   function mount(root){
     const demo=()=>fill(root,DEMO);
-    root.querySelectorAll('input,select').forEach(el=>{const dirty=()=>{const state=root.querySelector('[data-production-run-state]');state.textContent='Cambios pendientes · pulsa “Calcular lote”';state.className='run-state pending'};el.addEventListener('input',dirty);el.addEventListener('change',dirty)});
-    root.querySelector('[data-production-run]').addEventListener('click',()=>{if(validate(root))render(root)});
+    let liveTimer;
+    const updateLive=()=>{
+      clearTimeout(liveTimer);
+      liveTimer=setTimeout(()=>{if(validate(root)){render(root);root.querySelector('[data-production-run-state]').textContent='Actualización automática';}},220);
+    };
+    root.querySelectorAll('input,select').forEach(el=>{const dirty=()=>{const state=root.querySelector('[data-production-run-state]');state.textContent='Calculando cambios...';state.className='run-state pending';updateLive()};el.addEventListener('input',dirty);el.addEventListener('change',dirty)});
+    root.querySelector('[data-production-run]').addEventListener('click',()=>{if(validate(root)){render(root);root.querySelector('[data-production-results]').scrollIntoView({behavior:'smooth',block:'start'})}});
     root.querySelectorAll('[data-production-preset]').forEach(btn=>btn.addEventListener('click',()=>{const v={...DEMO};if(btn.dataset.productionPreset==='small')v.quantity=25;if(btn.dataset.productionPreset==='large')v.quantity=1000;fill(root,v);btn.classList.add('active');if(validate(root))render(root);root.querySelector('[data-production-results]').scrollIntoView({behavior:'smooth',block:'start'})}));
     root.querySelector('[data-production-reset]').addEventListener('click',()=>{demo();render(root)});
     root.querySelector('[data-bogota-tariffs]').addEventListener('click',()=>{$(root,'electricity_rate').value=1188.6328;$(root,'water_rate').value=11710.89;$(root,'location').value='Bogotá D.C.';$(root,'data_source').value='Servicios: Enel oct-2026 / EAAB abr-2026 (industrial); otros valores sintéticos';if(validate(root))render(root)});
