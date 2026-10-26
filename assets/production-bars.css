@@ -1,0 +1,7 @@
+.compare-track .prod-bar {
+  display: block !important;
+  height: 100% !important;
+  min-height: 11px;
+  min-width: 3px;
+  border-radius: 99px;
+}
