@@ -34,8 +34,13 @@
 @media(prefers-reduced-motion:reduce){.calc-flow[data-animated=true] .flow-step{animation:none;opacity:1;transform:none}}
 
 /* Lectura de resultados de producción */
+.production-app{overflow-x:hidden}
+.financial-section{min-width:0;width:100%;max-width:100%;overflow:hidden;margin-top:2px;padding:18px 20px}
+.financial-section-head{margin-bottom:12px}
+.emissions-section{margin-top:14px}
+.financial-explanation{margin:12px 0 0;max-width:none}
 .sale-results{display:block}
-.financial-table-wrap{overflow-x:auto;border:1px solid #29434a;border-radius:8px;background:#09171b}
+.financial-table-wrap{width:100%;overflow-x:auto;border:1px solid #29434a;border-radius:8px;background:#09171b}
 .financial-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .financial-table th,.financial-table td{padding:10px 12px;border-bottom:1px solid #263d43;text-align:right;vertical-align:middle}
 .financial-table th:first-child,.financial-table td:first-child{text-align:left;width:42%}
