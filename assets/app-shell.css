@@ -49,3 +49,20 @@ body{background:#091317}
 .app-view .badge{letter-spacing:.02em}
 .app-view .callout{border-radius:0}
 @media(max-width:620px){.nav{min-height:64px}.app-view .hero{padding-top:36px;padding-bottom:28px}.app-view .hero h1{font-size:2.15rem}.app-view .arch{min-height:0}.links{gap:4px}}
+
+/* Corrección final de layout: una sola cuadrícula centrada */
+#app-shell,.top .wrap{width:100%;margin-inline:auto}
+.app-view.wrap{width:min(1240px,calc(100% - 40px));margin-inline:auto}
+.app-view .grid{align-items:start}
+.app-view .card{width:100%;max-width:100%;margin-inline:0;box-sizing:border-box}
+.app-view .hero{text-align:left;overflow:hidden}
+.app-view .hero>*{max-width:780px}
+.app-view .hero-actions{max-width:none}
+.app-view .arch{min-height:0}
+.app-view .arch p,.app-view .card p{text-wrap:pretty}
+.prod-layout{grid-template-columns:minmax(280px,355px) minmax(0,1fr)}
+.prod-main,.results-column{min-width:0;width:100%}
+.prod-controls,.plan-card{overflow:hidden}
+.prod-field{min-width:0}
+@media(max-width:1040px){.app-view.wrap{width:min(100% - 32px,1240px)}.prod-layout{grid-template-columns:1fr}.prod-controls{position:static}.prod-charts,.app-view [data-production-results]>.grid.g2{grid-template-columns:1fr}}
+@media(max-width:620px){.app-view.wrap{width:calc(100% - 22px)}.app-view .hero{padding-inline:0}.app-view .grid.g2,.app-view .grid.g4{grid-template-columns:1fr}.links{width:100%}.prod-main,.prod-layout,.results-column{width:100%;max-width:100%}.production-app{overflow-x:hidden}}
