@@ -1,6 +1,0 @@
-escenario,solicitudes_por_segundo,datos_mb,complejidad_ia,presupuesto_cop_mes
-Base (normal),150,25,1.5,5000000
-Pico de sensores,850,15,1.0,5000000
-Evaluacion masiva,300,85,2.5,5000000
-Uso academico,600,5,1.0,6000000
-Uso industrial,20,80,2.5,16000000
