@@ -2,7 +2,7 @@
 .app-error{margin:14px auto;max-width:1180px}
 .app-view{min-height:calc(100vh - 70px)}
 .app-view[id]{scroll-margin-top:82px}
-.prod-layout>* ,.prod-main,.prod-controls,.plan-card,.prod-kpi{min-width:0}
+.prod-layout>* ,.prod-main,.prod-controls,.plan-card,.prod-kpi{min-width:0;max-width:100%}.production-app{width:100%;max-width:100%;overflow-x:hidden}.financial-table-wrap{max-width:100%}
 .prod-field .input-pair{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
 .prod-field .input-pair input{width:100%;min-width:0}
 .prod-controls .input-pair input,.plan-card .input-pair input{width:100%;min-width:0}

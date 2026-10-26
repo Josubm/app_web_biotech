@@ -33,6 +33,16 @@
 @media(prefers-reduced-motion:reduce){.calc-flow[data-animated=true] .flow-step{animation:none;opacity:1;transform:none}}
 
 /* Lectura de resultados de producción */
+.sale-results{display:block;width:100%;overflow:hidden}
+.financial-table-wrap{width:100%;overflow-x:auto;border:1px solid #29434a;border-radius:8px;background:#09171b}
+.financial-table{width:100%;min-width:560px;border-collapse:collapse;table-layout:fixed}
+.financial-table th,.financial-table td{padding:11px 14px;border-bottom:1px solid #263d43;text-align:right;vertical-align:middle;font-size:.82rem}
+.financial-table th:first-child,.financial-table td:first-child{text-align:left;width:34%}
+.financial-table th{color:#b8cbc4;background:#102229;font-weight:700}
+.financial-table td{color:#edf6f2;overflow-wrap:anywhere}
+.financial-table tbody tr:last-child td{border-bottom:0}
+.financial-highlight{background:#102a25}
+.financial-table td.good,.financial-table td.bad{font-weight:800}
 .sale-plan{grid-template-columns:minmax(0,1fr) minmax(105px,auto);align-items:start;gap:8px 12px}
 .sale-plan span{line-height:1.4;overflow-wrap:anywhere}
 .sale-plan strong{white-space:normal;overflow-wrap:anywhere;line-height:1.4}
@@ -60,7 +70,7 @@
 .viz rect:not(.barbg){transform-box:fill-box;transform-origin:left center;animation:chart-grow .72s cubic-bezier(.2,.75,.3,1) both}
 .compare-row:nth-child(2) .prod-bar{animation-delay:.06s}.compare-row:nth-child(3) .prod-bar{animation-delay:.12s}.compare-row:nth-child(4) .prod-bar{animation-delay:.18s}.compare-row:nth-child(5) .prod-bar{animation-delay:.24s}.compare-row:nth-child(6) .prod-bar{animation-delay:.3s}.compare-row:nth-child(7) .prod-bar{animation-delay:.36s}.compare-row:nth-child(8) .prod-bar{animation-delay:.42s}
 @media(prefers-reduced-motion:reduce){.prod-bar,.viz rect:not(.barbg){animation:none}}
-@media(max-width:620px){.sale-results{grid-template-columns:1fr}}
+@media(max-width:620px){.sale-results{grid-template-columns:1fr}.financial-table{min-width:560px}.financial-table-wrap{max-width:calc(100vw - 46px)}}
 
 /* Documentación web */
 .doc-content{max-width:1120px}
