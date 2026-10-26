@@ -66,3 +66,25 @@ body{background:#091317}
 .prod-field{min-width:0}
 @media(max-width:1040px){.app-view.wrap{width:min(100% - 32px,1240px)}.prod-layout{grid-template-columns:1fr}.prod-controls{position:static}.prod-charts,.app-view [data-production-results]>.grid.g2{grid-template-columns:1fr}}
 @media(max-width:620px){.app-view.wrap{width:calc(100% - 22px)}.app-view .hero{padding-inline:0}.app-view .grid.g2,.app-view .grid.g4{grid-template-columns:1fr}.links{width:100%}.prod-main,.prod-layout,.results-column{width:100%;max-width:100%}.production-app{overflow-x:hidden}}
+
+/* Reset visual del monolito: escala, alineación y tablas contenidas */
+.app-view .hero{padding-top:34px;padding-bottom:24px}
+.app-view .hero h1{font-size:clamp(2rem,4vw,3.25rem);line-height:1.08;margin-bottom:14px}
+.app-view .hero p{font-size:.98rem;line-height:1.55;margin-top:10px}
+.app-view .card{padding:16px}
+.app-view .section{padding-block:18px}
+.prod-layout{gap:14px;align-items:start}
+.prod-controls{padding:14px}
+.prod-controls .section-head{align-items:center}
+.prod-controls h2,.plan-card h2{font-size:1.08rem}
+.prod-field{margin:7px 0}
+.prod-field>span{font-size:.78rem;line-height:1.3}
+.prod-field .input-pair{gap:6px}
+.input-pair>span{font-size:.68rem;white-space:nowrap}
+.plan-grid{gap:10px}
+.plan-card{padding:13px}
+.prod-main,.prod-main>*,.results-column,.results-column>*{min-width:0;width:100%;max-width:100%}
+.table-scroll{max-width:100%;overflow-x:auto}
+.table-scroll table{min-width:560px;width:100%}
+@media(max-width:1040px){.prod-layout{grid-template-columns:1fr}.plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.app-view .hero{padding-top:28px}.app-view .hero h1{font-size:2rem}.app-view .card{padding:14px}.plan-grid{grid-template-columns:1fr}.prod-controls{width:100%}.table-scroll table{min-width:520px}}
