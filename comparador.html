@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Estima recursos, costos y margen de una producción; compara el plan base con una alternativa.">
+<title>Simulador de producción | BioTech</title>
+<link rel="stylesheet" href="assets/biotech.css?v=20261025-2">
+<link rel="stylesheet" href="assets/production.css?v=20261025-2">
+</head>
+<body>
+<a class="skip" href="#production">Saltar al simulador</a>
+<header class="top">
+<div class="wrap nav">
+<a class="brand" href="index.html">
+<span class="brand-mark">✳</span>BioTech · Producción</a>
+<nav class="links" aria-label="Navegación principal">
+<a href="index.html">Inicio</a>
+<a class="active" href="comparador.html">Simulador de producto</a>
+<a href="arquitecturas.html">Arquitecturas</a>
+<a href="documentacion.html">Modelo</a>
+</nav>
+</div>
+</header>
+<main id="production" class="wrap production-app" data-production-simulator>
+<section class="hero hero-compact">
+<div class="eyebrow">Cálculo de recursos · costos · sostenibilidad</div>
+<h1>¿Cuánto consume y cuesta fabricar este lote?</h1>
+<p>Escribe los datos de cualquier producto o carga una plantilla. Primero compara consumos por unidad; luego calcula el costo del lote y el precio sugerido.</p>
+<p class="product-current">Producto analizado: <strong data-product-name>Producto personalizado</strong>
+</p>
+<p class="small muted">Colombia · Pesos colombianos (COP). Sustituye las tarifas de ejemplo por las de tu municipio, proveedor y proceso.</p>
+</section>
+<section class="prod-layout section">
+<aside class="prod-controls card">
+  <div class="section-head">
+<div>
+<span class="eyebrow">01 · Producto y lote</span>
+<h2>Datos de entrada</h2>
+</div>
+<span class="run-state" data-production-run-state>Completa los datos</span>
+</div>
+  <label class="prod-field">
+<span>Producto</span>
+<input name="product" type="text" placeholder="Ej. botella, mesa, pieza metálica" maxlength="100">
+</label>
+  <label class="prod-field">
+<span>Municipio donde se produce</span>
+<input name="location" type="text" placeholder="Ej. Bogotá D.C. (opcional)" maxlength="80">
+</label>
+<label class="prod-field">
+<span>Fuente y fecha de los datos</span>
+<input name="data_source" type="text" placeholder="Ej. factura o ficha técnica, mes/año (opcional)" maxlength="160">
+</label>
+<label class="prod-field">
+<span>Unidades a fabricar</span>
+<div class="input-pair">
+<input data-label="Unidades a fabricar" name="quantity" type="number" min="1" max="1000000" step="1" required>
+<span>unidades</span>
+</div>
+</label>
+  <details class="production-advanced">
+<summary>Tarifas y objetivo de rentabilidad</summary>
+  <h3>Tarifas de producción · Colombia</h3>
+  <button class="button subtle" type="button" data-bogota-tariffs>Usar referencia pública Bogotá · industrial</button>
+<p class="small muted">Referencia de servicios públicos; verifica la factura del proceso. Otros valores siguen siendo datos de demostración.</p>
+  <label class="prod-field">
+<span>Electricidad</span>
+<div class="input-pair">
+<input data-label="Tarifa de electricidad" name="electricity_rate" type="number" min="0" max="100000000" step="0.0001" required>
+<span>COP/kWh</span>
+</div>
+</label>
+  <label class="prod-field">
+<span>Agua + alcantarillado</span>
+<div class="input-pair">
+<input data-label="Tarifa de agua y alcantarillado" name="water_rate" type="number" min="0" max="100000000" step="0.01" required>
+<span>COP/m³</span>
+</div>
+</label>
+  <label class="prod-field">
+<span>Uso de máquina</span>
+<div class="input-pair">
+<input data-label="Costo de uso de máquina" name="machine_rate" type="number" min="0" max="100000000" step="100" required>
+<span>COP/hora</span>
+</div>
+</label>
+  <label class="prod-field">
+<span>Disposición de residuo</span>
+<div class="input-pair">
+<input data-label="Costo de disposición de residuos" name="waste_rate" type="number" min="0" max="100000000" step="100" required>
+<span>COP/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Costos indirectos</span>
+<div class="input-pair">
+<input data-label="Costos indirectos" name="overhead_pct" type="number" min="0" max="300" step="1" required>
+<span>% del subtotal</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Margen bruto objetivo</span>
+<div class="input-pair">
+<input data-label="Margen bruto objetivo" name="target_margin_pct" type="number" min="0" max="90" step="1" required>
+<span>% del precio</span>
+</div>
+<small class="muted">Se calcula un precio sugerido para cubrir el costo total estimado y alcanzar este margen.</small>
+</label>
+</details>
+  <div class="button-row">
+<button class="button primary run-button" type="button" data-production-run>Calcular lote</button>
+<button class="button subtle" type="button" data-production-reset>Restablecer</button>
+</div>
+<div data-production-errors hidden aria-live="polite">
+</div>
+  <div class="preset-block">
+<div class="preset-title">
+<strong>Demostraciones</strong>
+<span class="small muted">cargar + calcular</span>
+</div>
+<div class="scenarios">
+<button class="scenario-btn" data-production-preset="demo">Ejemplo genérico (COP)</button>
+<button class="scenario-btn" data-production-preset="small">Lote pequeño</button>
+<button class="scenario-btn" data-production-preset="large">Lote grande</button>
+</div>
+</div>
+  <details class="csv-loader">
+<summary>Cargar datos de producto desde CSV</summary>
+<p class="small muted">La plantilla incluye una fila por comparación: lote, plan base, alternativa y tarifas.</p>
+<label class="button file-button" for="production-csv-file">Elegir CSV de producción</label>
+<input id="production-csv-file" data-production-csv type="file" accept=".csv,text/csv">
+<div data-production-csv-ready hidden>
+<label for="production-csv-row">Producto del archivo</label>
+<select id="production-csv-row" data-production-csv-row>
+</select>
+<p class="small muted" data-production-csv-message>
+</p>
+<button class="button" type="button" data-load-production-csv>Cargar variables</button>
+</div>
+<p class="small">
+<a href="datos/produccion_demo.csv" download>Descargar plantilla con datos demostrativos</a>
+</p>
+</details>
+  <details class="csv-loader">
+<summary>Factores opcionales para CO₂e</summary>
+<p class="small muted">Añádelos solo si tienes factores de una fuente confiable. Si faltan, BioTech no inventa el cálculo de emisiones.</p>
+<label class="prod-field">
+<span>Electricidad</span>
+<div class="input-pair">
+<input name="grid_factor" type="number" min="0" max="10000" step="0.001" placeholder="factor">
+<span>kg CO₂e/kWh</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Material</span>
+<div class="input-pair">
+<input name="material_factor" type="number" min="0" max="100000" step="0.001" placeholder="factor">
+<span>kg CO₂e/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Agua</span>
+<div class="input-pair">
+<input name="water_factor" type="number" min="0" max="100000" step="0.001" placeholder="factor">
+<span>kg CO₂e/m³</span>
+</div>
+</label>
+</details>
+</aside>
+<div class="prod-main">
+  <section class="plan-grid">
+<article class="card plan-card">
+<div class="plan-title">
+<span class="plan-mark base-mark">A</span>
+<div>
+<span class="eyebrow">Referencia</span>
+<h2>Plan base</h2>
+</div>
+</div>
+<p class="small muted">Ingresa valores para una unidad que cumple calidad.</p>
+<label class="prod-field">
+<span>Masa de producto terminado por unidad</span>
+<div class="input-pair">
+<input data-label="Material base por unidad" name="base_material_kg" type="number" min="0.0001" max="100000" step="0.0001" required>
+<span>kg/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Electricidad por unidad</span>
+<div class="input-pair">
+<input data-label="Electricidad base por unidad" name="base_energy_kwh" type="number" min="0" max="1000000" step="0.001" required>
+<span>kWh</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Agua por unidad</span>
+<div class="input-pair">
+<input data-label="Agua base por unidad" name="base_water_l" type="number" min="0" max="1000000" step="0.001" required>
+<span>L</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Tiempo de máquina</span>
+<div class="input-pair">
+<input data-label="Tiempo de máquina base" name="base_time_min" type="number" min="0" max="100000" step="0.1" required>
+<span>min/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Material perdido o rechazado</span>
+<div class="input-pair">
+<input data-label="Residuo base" name="base_scrap_pct" type="number" min="0" max="95" step="0.1" required>
+<span>% del material que entra</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio del material</span>
+<div class="input-pair">
+<input data-label="Precio del material base" name="base_material_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio de venta previsto</span>
+<div class="input-pair">
+<input data-label="Precio de venta base" name="base_sale_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<details class="plan-advanced">
+<summary>Costos adicionales por unidad</summary>
+<label class="prod-field">
+<span>Mano de obra por unidad</span>
+<div class="input-pair">
+<input data-label="Mano de obra base" name="base_labor_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Empaque por unidad</span>
+<div class="input-pair">
+<input data-label="Empaque base" name="base_packaging_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Transporte por unidad</span>
+<div class="input-pair">
+<input data-label="Transporte base" name="base_transport_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Mantenimiento de máquina</span>
+<div class="input-pair">
+<input data-label="Mantenimiento base" name="base_maintenance_cop_h" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/hora</span>
+</div>
+</label>
+</details>
+</article>
+  <article class="card plan-card alt-plan">
+<div class="plan-title">
+<span class="plan-mark alt-mark">B</span>
+<div>
+<span class="eyebrow">Propuesta</span>
+<h2>Alternativa</h2>
+</div>
+</div>
+<p class="small muted">Usa la misma cantidad del plan base y cambia solo lo que estás comparando.</p>
+<label class="prod-field">
+<span>Masa de producto terminado por unidad</span>
+<div class="input-pair">
+<input data-label="Material alternativo por unidad" name="alt_material_kg" type="number" min="0.0001" max="100000" step="0.0001" required>
+<span>kg/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Electricidad por unidad</span>
+<div class="input-pair">
+<input data-label="Electricidad alternativa por unidad" name="alt_energy_kwh" type="number" min="0" max="1000000" step="0.001" required>
+<span>kWh</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Agua por unidad</span>
+<div class="input-pair">
+<input data-label="Agua alternativa por unidad" name="alt_water_l" type="number" min="0" max="1000000" step="0.001" required>
+<span>L</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Tiempo de máquina</span>
+<div class="input-pair">
+<input data-label="Tiempo de máquina alternativo" name="alt_time_min" type="number" min="0" max="100000" step="0.1" required>
+<span>min/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Material perdido o rechazado</span>
+<div class="input-pair">
+<input data-label="Residuo alternativo" name="alt_scrap_pct" type="number" min="0" max="95" step="0.1" required>
+<span>% del material que entra</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio del material</span>
+<div class="input-pair">
+<input data-label="Precio del material alternativo" name="alt_material_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio de venta previsto</span>
+<div class="input-pair">
+<input data-label="Precio de venta alternativo" name="alt_sale_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<details class="plan-advanced">
+<summary>Costos adicionales por unidad</summary>
+<label class="prod-field">
+<span>Mano de obra por unidad</span>
+<div class="input-pair">
+<input data-label="Mano de obra alternativa" name="alt_labor_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Empaque por unidad</span>
+<div class="input-pair">
+<input data-label="Empaque alternativo" name="alt_packaging_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Transporte por unidad</span>
+<div class="input-pair">
+<input data-label="Transporte alternativo" name="alt_transport_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Mantenimiento de máquina</span>
+<div class="input-pair">
+<input data-label="Mantenimiento alternativo" name="alt_maintenance_cop_h" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/hora</span>
+</div>
+</label>
+</details>
+</article>
+</section>
+  <section class="card empty-state" data-production-empty>
+<span class="eyebrow">Empieza aquí</span>
+<h2>Completa tus datos o carga un ejemplo</h2>
+<p>Las entradas deben corresponder a tu producto y a una unidad terminada. Al calcular, los resultados aparecen abajo con consumos, costo total, precio sugerido y comparación.</p>
+<button class="button primary" type="button" data-empty-preset>Cargar ejemplo sintético en COP</button>
+</section>
+  <section class="section" data-production-results hidden>
+<article class="card production-decision" data-production-decision>
+</article>
+<section class="calc-flow" data-calc-flow aria-label="Etapas del cálculo">
+<article class="flow-step">
+<span>01 · Pedido</span>
+<strong data-flow-order>
+</strong>
+</article>
+<article class="flow-step">
+<span>02 · Material</span>
+<strong data-flow-material>
+</strong>
+</article>
+<article class="flow-step">
+<span>03 · Recursos</span>
+<strong data-flow-resources>
+</strong>
+</article>
+<article class="flow-step">
+<span>04 · Costos y precio</span>
+<strong data-flow-price>
+</strong>
+</article>
+</section>
+    <div class="prod-kpis" data-production-kpis>
+</div>
+    <div class="grid g2 prod-charts">
+<article class="card">
+<div class="section-head">
+<div>
+<span class="eyebrow">Consumo del lote</span>
+<h2>Recursos e impacto</h2>
+</div>
+</div>
+<div data-resource-chart>
+</div>
+<p class="chart-caption">Cada fila usa su propia escala; compara base y alternativa dentro de la misma unidad.</p>
+</article>
+<article class="card">
+<div class="section-head">
+<div>
+<span class="eyebrow">Desglose de costos</span>
+<h2>¿En qué se gasta?</h2>
+</div>
+</div>
+<div data-cost-chart>
+</div>
+<details class="cost-detail">
+<summary>Ver cada rubro de costo</summary>
+<div data-cost-detail>
+</div>
+</details>
+</article>
+</div>
+    <div class="grid g2">
+<article class="card">
+<h2>Precio y margen bruto estimado</h2>
+<div class="sale-results" data-sale-results>
+</div>
+<p class="small muted">Margen = (precio de venta − costo total por unidad) / precio de venta. Incluye los costos ingresados; impuestos, devoluciones y costos financieros se excluyen.</p>
+</article>
+<article class="card">
+<h2>Huella de carbono (opcional)</h2>
+<div data-emissions>
+</div>
+<p class="small muted">Se calcula con los factores que ingreses: energía + material + agua. Sin fuente de factores no se estima CO₂e.</p>
+</article>
+</div>
+  </section>
+  <details class="card production-method">
+<summary>Ver fórmulas y de dónde salen las variables</summary>
+<div class="method-content">
+<p>El modelo es un balance de producción/costos: usa datos de consumo por unidad que se miden, se estiman con una ficha técnica o se cargan desde CSV. Multiplica esas tasas por las unidades del lote y hace explícito el desperdicio.</p>
+<ul>
+<li>Producto terminado = cantidad × masa neta por unidad.</li>
+<li>Material de entrada = masa del producto / (1 − residuo%). Residuo = entrada − producto terminado.</li>
+<li>Energía, agua y máquina = consumo por unidad × cantidad (tiempo de máquina convertido a horas).</li>
+<li>Costo total estimado = materia prima + energía + agua + máquina + mano de obra + empaque + transporte + mantenimiento + disposición de residuos + costos indirectos.</li>
+<li>Costo total unitario = costo total del lote / cantidad.</li>
+<li>Margen bruto estimado = (precio de venta − costo total por unidad) / precio de venta.</li>
+</ul>
+<p>Precio sugerido = costo total unitario / (1 − margen objetivo). El cálculo no inventa una predicción de ML; se puede calibrar con históricos reales de producción.</p>
+<p>En la infografía de impresión 3D se identifican variables de diseño como espesor de capa, contornos, relleno, patrón y orientación; las salidas estudiadas incluyen energía, tiempo, masa final y scrap. Esos antecedentes no traen las filas de datos ni los coeficientes del producto BioTech, por eso aquí se capturan tasas unitarias y se comparan con transparencia.</p>
+<a href="documentacion.html#modelo">Ver contexto, supuestos y datos faltantes para IA →</a>
+</div>
+</details>
+  <p class="small muted">Ubicación/fuente: <span data-location-summary>sin especificar</span>. Ejemplo genérico sintético en COP, editable. Cálculos de planificación; no son cotización ni medición real. Último cálculo: <span data-produced-at>
+</span>
+</p>
+</div>
+</section>
+</main>
+<footer class="foot">
+<div class="wrap">BioTech · <a href="arquitecturas.html">Evaluar la arquitectura de la plataforma</a> · <a href="documentacion.html">Modelo y guía de sustentación</a>
+</div>
+</footer>
+<script src="assets/production.js?v=20261025-2">
+</script>
+</body>
+</html>

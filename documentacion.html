@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Guía del proyecto BioTech: propósito, uso, variables, modelos, pruebas y límites.">
+<title>Documentación del proyecto | BioTech</title>
+<link rel="stylesheet" href="assets/biotech.css?v=20261025-2">
+<link rel="stylesheet" href="assets/production.css?v=20261025-2">
+</head>
+<body>
+<a class="skip" href="#documentacion">Saltar a la documentación</a>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><span class="brand-mark">✳</span>BioTech · Documentación</a>
+    <nav class="links" aria-label="Navegación principal">
+      <a href="index.html">Inicio</a><a href="comparador.html">Producción</a><a href="arquitecturas.html">Arquitecturas</a>
+    </nav>
+  </div>
+</header>
+<main id="documentacion" class="wrap doc-content">
+  <section class="hero hero-compact">
+    <div class="eyebrow">Ingeniería Aplicada · Colombia · COP</div>
+    <h1>Qué hace BioTech, cómo calcula y cómo comprobarlo</h1>
+    <p>Esta guía explica el propósito del proyecto, los datos que necesita, los resultados que entrega y los límites que deben mencionarse al sustentarlo.</p>
+    <div class="hero-actions"><a class="button primary" href="comparador.html">Probar producción</a><a class="button" href="arquitecturas.html">Probar arquitecturas</a><a class="button" href="pruebas.html">Ver evidencia de pruebas</a></div>
+  </section>
+
+  <section class="section grid g3">
+    <article class="card"><span class="eyebrow">Problema</span><h2>Planear antes de fabricar</h2><p>El costo depende de materiales, desperdicio, energía, agua, tiempo de equipo, trabajo, empaque y logística. El módulo permite cambiar datos y observar cómo afectan un lote.</p></article>
+    <article class="card"><span class="eyebrow">Decisión</span><h2>Comparar alternativas</h2><p>El equipo compara un plan base y una alternativa con la misma cantidad. Las gráficas separan recursos físicos y dinero para que cada resultado tenga unidades claras.</p></article>
+    <article class="card"><span class="eyebrow">Plataforma</span><h2>Elegir arquitectura</h2><p>La actividad técnica compara Monolito, Microservicios y Eventos al variar solicitudes, datos por solicitud, carga de análisis y presupuesto mensual.</p></article>
+  </section>
+
+  <section class="section card">
+    <h2>Por qué es una aplicación web estática</h2>
+    <p>El objetivo es tener una demostración sencilla de publicar desde GitHub Pages. HTML, CSS y JavaScript en el navegador evitan instalar un servidor, mantener una base de datos o configurar servicios externos. Los CSV se seleccionan desde el equipo y los cálculos ocurren durante esa sesión.</p>
+    <div class="doc-flow" aria-label="Flujo del sistema"><div><b>1</b><strong>Ingresar o cargar datos</strong><span>Formulario o CSV local</span></div><div><b>2</b><strong>Validar unidades y rangos</strong><span>Mensajes para datos faltantes</span></div><div><b>3</b><strong>Calcular y comparar</strong><span>Modelo matemático en JavaScript</span></div><div><b>4</b><strong>Leer gráficos y costos</strong><span>Resultado para discusión</span></div></div>
+    <p class="callout">No se guardan formularios en una base de datos. Al recargar, vuelves al estado inicial. Conserva las facturas, mediciones y archivos fuente por separado.</p>
+  </section>
+
+  <section id="produccion" class="section">
+    <h2 class="section-title">1. Simulador de producción</h2>
+    <p class="section-intro">Abre <a href="comparador.html">Producción</a>. Completa nombre, cantidad, municipio/fuente cuando se conozcan y los datos unitarios de los dos planes.</p>
+    <div class="grid g2">
+      <article class="card">
+        <h3>Entradas principales</h3>
+        <ul>
+          <li>Producto y cantidad de unidades a fabricar.</li>
+          <li>Masa neta (kg/unidad) y pérdida o rechazo (%).</li>
+          <li>Energía (kWh/unidad), agua (L/unidad) y máquina (minutos/unidad).</li>
+          <li>Precio del material (COP/kg) y precio de venta previsto (COP/unidad).</li>
+          <li>Mano de obra, empaque, transporte y mantenimiento.</li>
+          <li>Tarifas compartidas de electricidad, agua, máquina y disposición de residuos.</li>
+          <li>Costos indirectos, margen objetivo y, opcionalmente, factores de emisión.</li>
+        </ul>
+        <p>Las variables del producto se introducen para el plan base y para la alternativa. Nombre, municipio y fuente son texto opcional; el equipo debe anotar la fecha de cada tarifa real.</p>
+      </article>
+      <article class="card">
+        <h3>Qué se obtiene</h3>
+        <ul>
+          <li>Material de entrada, producto terminado y residuo estimado.</li>
+          <li>Energía, agua y horas de máquina del lote.</li>
+          <li>Costo por rubro, costo total del lote y costo unitario.</li>
+          <li>Precio sugerido para el margen objetivo.</li>
+          <li>Margen al precio ingresado y resultado bruto estimado.</li>
+          <li>Cambio base/alternativa por métrica y CO₂e opcional.</li>
+        </ul>
+        <p>En cada barra se ven las etiquetas Base/Alternativa y los valores con unidades. La longitud compara ambos planes dentro de la misma métrica; la animación solo destaca el recálculo.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="formulas-produccion" class="section card">
+    <h2>Fórmulas de producción</h2>
+    <p>Sea <code>Q</code> el número de unidades, <code>m</code> su masa neta y <code>s</code> la proporción de material que se pierde.</p>
+    <pre class="formula-box"><code>Producto terminado (kg) = Q × m
+Material que entra (kg)  = (Q × m) / (1 − s)
+Residuo (kg)              = material que entra − producto terminado
+Energía (kWh)             = Q × energía por unidad
+Agua (L)                  = Q × agua por unidad
+Horas de máquina          = Q × minutos por unidad / 60
+
+Costo material   = material que entra × precio COP/kg
+Costo energía    = energía × tarifa COP/kWh
+Costo agua       = agua (L) / 1.000 × tarifa COP/m³
+Costo máquina    = horas × tarifa de máquina COP/h
+Otros rubros     = cantidad × costo por unidad (o horas/kg según aplique)
+Subtotal         = material + energía + agua + máquina + otros rubros
+Indirectos       = subtotal × porcentaje indirecto
+Costo lote       = subtotal + indirectos
+Costo unitario   = costo lote / Q
+Precio sugerido  = costo unitario / (1 − margen objetivo)
+Margen bruto (%) = (venta unitaria − costo unitario) / venta unitaria × 100</code></pre>
+    <p>El precio sugerido cubre los costos que se introdujeron y el margen elegido. No predice el precio de mercado ni la decisión del cliente. Añade impuestos, comisiones, devoluciones, financiación u otros costos si el caso los necesita.</p>
+  </section>
+
+  <section id="arquitecturas" class="section">
+    <h2 class="section-title">2. Comparador de arquitecturas</h2>
+    <p class="section-intro">Abre <a href="arquitecturas.html">Arquitecturas</a> para comparar todas las opciones bajo las mismas entradas, o elige una página individual para ver su explicación.</p>
+    <div class="grid g2">
+      <article class="card"><h3>Entradas</h3><ul><li>Solicitudes por segundo: 10–1.000.</li><li>Datos por solicitud: 1–100 MB.</li><li>Carga computacional de análisis: 1×, 1,5× o 2,5×.</li><li>Presupuesto: COP 400.000–40.000.000 al mes.</li></ul><p>La “carga computacional” multiplica trabajo estimado; no es una IA entrenada. Los botones Base, Pico sensores, Masivo, Académico e Industrial llenan valores de prueba.</p></article>
+      <article class="card"><h3>Modelo y criterios</h3><p>El motor usa una cola M/M/c: tasa de llegada <code>λ</code>, tasa de servicio por unidad <code>μ</code> y <code>c</code> unidades. Calcula utilización, probabilidad y espera de cola mediante Erlang C, y suma servicio y latencia de red.</p><p>El SLA de demostración exige latencia ≤ 200 ms, disponibilidad ≥ 99,5 %, cola estable y costo dentro del presupuesto. Si ninguna alternativa cumple, se informa el mayor puntaje y sus incumplimientos.</p></article>
+    </div>
+    <div class="section card">
+      <h3>Puntaje comparativo</h3>
+      <pre class="formula-box"><code>Puntaje latencia        = limitar(1 − latencia / 200, 0, 1) × 100
+Puntaje escalabilidad   = 100 × eficiencia × mínimo(1, capacidad / solicitudes)
+Puntaje disponibilidad = limitar((disponibilidad − 0,95) / 0,05, 0, 1) × 100
+Puntaje total           = 40 % latencia + 30 % escalabilidad + 30 % disponibilidad</code></pre>
+      <p>El costo se ve como indicador y debe respetar el presupuesto, pero no se suma directamente al puntaje total. Los parámetros base de costo, servicio, red y disponibilidad están escritos en `assets/simulator.js`; son supuestos educativos y no precios de un proveedor real.</p>
+    </div>
+  </section>
+
+  <section id="datos" class="section card">
+    <h2>Datos, CSV y controles</h2>
+    <p>Los formularios validan mínimos, máximos y pasos antes del cálculo. Si se selecciona un CSV, el lector acepta encabezados, comillas dobles, comas dentro de celdas entrecomilladas y comillas escapadas. El formato de cada importación está documentado junto a su plantilla.</p>
+    <ul><li><a href="datos/produccion_demo.csv" download>Descargar CSV de producción</a>: una fila sintética para probar el formato.</li><li><a href="datos/escenarios_modelo.csv" download>Descargar escenarios de arquitectura</a>: cinco escenarios sintéticos.</li><li>Usa punto decimal en los CSV y no cambies los encabezados de las plantillas.</li><li>Los CSV no son cotizaciones ni mediciones de Colombia.</li></ul>
+  </section>
+
+  <section id="calidad-y-limites" class="section grid g2">
+    <article class="card"><h2>Calidad de datos y Colombia</h2><p>Electricidad, agua, mano de obra, transporte y materiales dependen de municipio, proveedor, actividad y fecha. Usa facturas, cotizaciones, ficha técnica o medición y registra fuente, unidad, municipio y fecha. El botón Bogotá es solo un prellenado de referencia y debe verificarse con la factura vigente.</p><p>Los antecedentes del proyecto describen variables de estudios externos, pero no traen la base cruda de producción BioTech. No se afirma que los algoritmos Extra Trees, Random Forest, PNN u otro modelo se hayan entrenado con esos datos.</p></article>
+    <article class="card"><h2>Alcance y límites</h2><p>CO₂e solo se calcula si se introducen factores con unidad y fuente; suma energía, material y agua capturados. No representa un ACV completo: faltan procedencia, transporte, uso, vida útil, mantenimiento y fin de vida.</p><p>La simulación de arquitectura tampoco despliega servicios. El rendimiento real requiere pruebas de carga con infraestructura, software, datos y proveedor definidos.</p></article>
+  </section>
+
+  <section id="pruebas" class="section card">
+    <h2>Cómo se comprobó</h2>
+    <p>Se ejecutaron ocho pruebas automatizadas de fórmulas, escenarios y lectura de CSV, se revisaron sintaxis, referencias de páginas y cálculos de ejemplo, y se abrió el módulo de arquitecturas en el navegador. El detalle, resultados esperados y pasos de regresión están en <a href="pruebas.html">PRUEBAS.md</a>.</p>
+    <pre class="formula-box"><code>node pruebas.js
+node --check assets/production.js
+node --check assets/simulator.js</code></pre>
+    <p>Resultado registrado: <strong>8 pruebas automatizadas pasaron</strong>. El archivo de pruebas permite repetirlas al cambiar código o subir datos nuevos. La guía separa lo que se verificó en esta sesión de la lista manual que debe repetirse después del despliegue.</p>
+  </section>
+
+  <section class="section card">
+    <h2>Carpeta de publicación</h2>
+    <p>El paquete completo está en <code>app_web_biotech/</code>. Los HTML, `assets/`, `datos/`, documentos y pruebas deben permanecer dentro de esa carpeta. En la raíz del repositorio GitHub Pages deben quedar directamente `index.html`, `comparador.html`, `assets/`, `datos/` y `.nojekyll`.</p>
+    <p>Después de actualizar el repositorio, espera que termine Pages y recarga con <kbd>Ctrl</kbd>+<kbd>F5</kbd> o prueba una ventana privada. Los vínculos de CSS/JS incluyen una versión en la URL para evitar que el navegador retenga recursos antiguos. Consulta <a href="README.md">README.md</a> y <a href="DOCUMENTACION.md">DOCUMENTACION.md</a>.</p>
+    <a class="button primary" href="comparador.html">Volver al simulador de producción →</a>
+  </section>
+</main>
+<footer class="foot"><div class="wrap">BioTech · Documentación del simulador · <a href="index.html">Inicio</a> · <a href="pruebas.html">Pruebas</a></div></footer>
+</body>
+</html>
