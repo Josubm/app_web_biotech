@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="BioTech integra el cálculo de producción y la comparación de arquitecturas en un monolito modular."><title>BioTech | Aplicación Monolito</title>
+<link rel="stylesheet" href="assets/biotech.css?v=20261025-8">
+<link rel="stylesheet" href="assets/production.css?v=20261025-8">
+<link rel="stylesheet" href="assets/simulator.css?v=20261025-8">
+<link rel="stylesheet" href="assets/app-shell.css?v=20261025-8"></head><body><a class="skip" href="#production">Saltar al contenido de la aplicación</a>
+<header class="top"><div class="wrap nav"><a class="brand" href="#inicio"><span class="brand-mark">✳</span>BioTech · Monolito</a><nav class="links" aria-label="Secciones de la aplicación"><a data-route="inicio" href="#inicio">Inicio</a><a data-route="production" href="#production">Producción</a><a data-route="simulador" href="#simulador">Arquitecturas</a><a href="documentacion.html">Documentación</a><a href="pruebas.html">Pruebas</a></nav></div></header>
+<main id="app-shell">
+<section id="inicio" class="app-view wrap is-active"><section class="hero"><div class="eyebrow">Colombia · Universidad Libre · Facultad de Ingeniería · 2026-2</div><h1>Planifica en pesos colombianos antes de fabricar.</h1><p>BioTech aborda el problema de estimar material, energía, agua, tiempo de máquina y costos antes de producir. Compara un plan base con una alternativa de producto o proceso, identifica consumos y revisa si el costo total estimado frente al precio de venta esperado (COP).</p><div class="hero-actions"><a class="button primary" href="#production">Abrir simulador de producto</a><a class="button" href="datos/produccion_demo.csv" download>Descargar datos de demostración (CSV)</a></div></section>
+<section class="section grid g2"><article class="card arch" style="--arch:var(--green)"><span class="badge">Módulo principal · producción</span><h2>¿Cuánto consume y cuesta el lote?</h2><p>Ingresa valores medidos o estimados por unidad, carga un CSV, cambia cantidad o precio y calcula costos y recursos para el lote completo. Compara base y alternativa mediante gráficas, costo unitario, precio y margen bruto.</p><a class="button primary" href="#production">Planificar una producción →</a></article><article class="card arch" style="--arch:var(--event)"><span class="badge">Arquitectura elegida · Monolito</span><h2>Una aplicación integrada para BioTech</h2><p>El proyecto reúne producción, validación, importación CSV y gráficas en un solo despliegue. La página de arquitecturas explica por qué se eligió Monolito y lo compara con Microservicios y Eventos.</p><a class="button" href="#simulador">Ver decisión y comparación →</a></article></section>
+<section class="section"><h2 class="section-title">Variables de producción</h2><p class="section-intro">Se capturan como tasas por unidad y se multiplican por la cantidad planeada; puedes editarlas o cargar tu propio lote.</p><div class="grid g4"><article class="card"><span class="badge">Consumo</span><h3>Materia prima</h3><p class="muted">Masa neta por pieza, porcentaje de residuo y costo por kg.</p></article><article class="card"><span class="badge">Consumo</span><h3>Energía y agua</h3><p class="muted">kWh y litros por pieza, con tarifas editables.</p></article><article class="card"><span class="badge">Proceso</span><h3>Tiempo de máquina</h3><p class="muted">Minutos por pieza y costo por hora de uso.</p></article><article class="card"><span class="badge">Precio</span><h3>Costo y margen</h3><p class="muted">Costos de producción estimados en COP, precio sugerido y margen bruto.</p></article></div></section>
+<section class="section grid g2"><article class="card"><h2>¿Qué calculamos?</h2><p>Material y desperdicio, electricidad, agua, máquina, mano de obra, empaque, transporte, mantenimiento, disposición de residuos, costos indirectos, precio y margen. CO₂e es opcional: se calcula solo si ingresas factores de emisión con una fuente confiable.</p><p class="callout">No inventamos un predictor de inteligencia artificial. Los documentos incluyen resultados de estudios externos, pero no los datos de entrenamiento ni las mediciones del producto BioTech.</p></article><article class="card"><h2>Datos de proyecto disponibles</h2><p>La infografía de impresión 3D enumera espesor de capa, contornos, relleno, patrón y orientación como variables del estudio, con energía, tiempo, masa final y scrap como salidas. El póster textil resume un conjunto externo de 152.762 muestras y un modelo Extra Trees; esos datos brutos no están en la carpeta.</p><p class="small muted">Por eso el simulador usa valores por pieza que el equipo puede cargar desde una ficha real o CSV. La demostración genérica en COP es sintética y editable; anota municipio, fuente y fecha para los datos reales.</p><a class="button" href="documentacion.html#modelo">Ver cómo se relacionan los documentos con el modelo →</a></article></section>
+<section class="section card"><h2>Ciclo de vida del producto</h2><p>La propuesta BioTech contempla extracción, producción, transporte, uso y disposición final. Esta versión calcula con detalle la etapa de <strong>producción</strong>, usando energía, materiales, agua, máquina y residuos. Para calcular impactos ACV de las demás etapas hacen falta datos de transporte, vida útil, mantenimiento y fin de vida que no aparecen en los archivos compartidos.</p></section>
+<section class="section"><h2 class="section-title">Equipo</h2><p>Paula Andrea Parra Baquero · Natalia Ramírez Díaz · José Isaías Barrios Machado</p><p class="muted small">Ingeniería Aplicada · Facultad de Ingeniería · Universidad Libre</p></section></section>
+<section id="production" class="app-view wrap production-app" data-production-simulator>
+<section class="hero hero-compact">
+<div class="eyebrow">Cálculo de recursos · costos · sostenibilidad</div>
+<h1>¿Cuánto consume y cuesta fabricar este lote?</h1>
+<p>Escribe los datos de cualquier producto o carga una plantilla. Primero compara consumos por unidad; luego calcula el costo del lote y el precio sugerido.</p>
+<p class="product-current">Producto analizado: <strong data-product-name>Producto personalizado</strong>
+</p>
+<p class="small muted">Colombia · Pesos colombianos (COP). Sustituye las tarifas de ejemplo por las de tu municipio, proveedor y proceso.</p>
+</section>
+<section class="prod-layout section">
+<aside class="prod-controls card">
+  <div class="section-head">
+<div>
+<span class="eyebrow">01 · Producto y lote</span>
+<h2>Datos de entrada</h2>
+</div>
+<span class="run-state" data-production-run-state>Completa los datos</span>
+</div>
+  <label class="prod-field">
+<span>Producto</span>
+<input name="product" type="text" placeholder="Ej. botella, mesa, pieza metálica" maxlength="100">
+</label>
+  <label class="prod-field">
+<span>Municipio donde se produce</span>
+<input name="location" type="text" placeholder="Ej. Bogotá D.C. (opcional)" maxlength="80">
+</label>
+<label class="prod-field">
+<span>Fuente y fecha de los datos</span>
+<input name="data_source" type="text" placeholder="Ej. factura o ficha técnica, mes/año (opcional)" maxlength="160">
+</label>
+<label class="prod-field">
+<span>Unidades a fabricar</span>
+<div class="input-pair">
+<input data-label="Unidades a fabricar" name="quantity" type="number" min="1" max="1000000" step="1" required>
+<span>unidades</span>
+</div>
+</label>
+  <details class="production-advanced">
+<summary>Tarifas y objetivo de rentabilidad</summary>
+  <h3>Tarifas de producción · Colombia</h3>
+  <button class="button subtle" type="button" data-bogota-tariffs>Usar referencia pública Bogotá · industrial</button>
+<p class="small muted">Referencia de servicios públicos; verifica la factura del proceso. Otros valores siguen siendo datos de demostración.</p>
+  <label class="prod-field">
+<span>Electricidad</span>
+<div class="input-pair">
+<input data-label="Tarifa de electricidad" name="electricity_rate" type="number" min="0" max="100000000" step="0.0001" required>
+<span>COP/kWh</span>
+</div>
+</label>
+  <label class="prod-field">
+<span>Agua + alcantarillado</span>
+<div class="input-pair">
+<input data-label="Tarifa de agua y alcantarillado" name="water_rate" type="number" min="0" max="100000000" step="0.01" required>
+<span>COP/m³</span>
+</div>
+</label>
+  <label class="prod-field">
+<span>Uso de máquina</span>
+<div class="input-pair">
+<input data-label="Costo de uso de máquina" name="machine_rate" type="number" min="0" max="100000000" step="100" required>
+<span>COP/hora</span>
+</div>
+</label>
+  <label class="prod-field">
+<span>Disposición de residuo</span>
+<div class="input-pair">
+<input data-label="Costo de disposición de residuos" name="waste_rate" type="number" min="0" max="100000000" step="100" required>
+<span>COP/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Costos indirectos</span>
+<div class="input-pair">
+<input data-label="Costos indirectos" name="overhead_pct" type="number" min="0" max="300" step="1" required>
+<span>% del subtotal</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Margen bruto objetivo</span>
+<div class="input-pair">
+<input data-label="Margen bruto objetivo" name="target_margin_pct" type="number" min="0" max="90" step="1" required>
+<span>% del precio</span>
+</div>
+<small class="muted">Se calcula un precio sugerido para cubrir el costo total estimado y alcanzar este margen.</small>
+</label>
+</details>
+  <div class="button-row">
+<button class="button primary run-button" type="button" data-production-run>Calcular lote</button>
+<button class="button subtle" type="button" data-production-reset>Restablecer</button>
+</div>
+<div data-production-errors hidden aria-live="polite">
+</div>
+  <div class="preset-block">
+<div class="preset-title">
+<strong>Demostraciones</strong>
+<span class="small muted">cargar + calcular</span>
+</div>
+<div class="scenarios">
+<button class="scenario-btn" data-production-preset="demo">Ejemplo genérico (COP)</button>
+<button class="scenario-btn" data-production-preset="small">Lote pequeño</button>
+<button class="scenario-btn" data-production-preset="large">Lote grande</button>
+</div>
+</div>
+  <details class="csv-loader">
+<summary>Cargar datos de producto desde CSV</summary>
+<p class="small muted">La plantilla incluye una fila por comparación: lote, plan base, alternativa y tarifas.</p>
+<label class="button file-button" for="production-csv-file">Elegir CSV de producción</label>
+<input id="production-csv-file" data-production-csv type="file" accept=".csv,text/csv">
+<div data-production-csv-ready hidden>
+<label for="production-csv-row">Producto del archivo</label>
+<select id="production-csv-row" data-production-csv-row>
+</select>
+<p class="small muted" data-production-csv-message>
+</p>
+<button class="button" type="button" data-load-production-csv>Cargar variables</button>
+</div>
+<p class="small">
+<a href="datos/produccion_demo.csv" download>Descargar plantilla con datos demostrativos</a>
+</p>
+</details>
+  <details class="csv-loader">
+<summary>Factores opcionales para CO₂e</summary>
+<p class="small muted">Añádelos solo si tienes factores de una fuente confiable. Si faltan, BioTech no inventa el cálculo de emisiones.</p>
+<label class="prod-field">
+<span>Electricidad</span>
+<div class="input-pair">
+<input name="grid_factor" type="number" min="0" max="10000" step="0.001" placeholder="factor">
+<span>kg CO₂e/kWh</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Material</span>
+<div class="input-pair">
+<input name="material_factor" type="number" min="0" max="100000" step="0.001" placeholder="factor">
+<span>kg CO₂e/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Agua</span>
+<div class="input-pair">
+<input name="water_factor" type="number" min="0" max="100000" step="0.001" placeholder="factor">
+<span>kg CO₂e/m³</span>
+</div>
+</label>
+</details>
+</aside>
+<div class="prod-main">
+  <section class="plan-grid">
+<article class="card plan-card">
+<div class="plan-title">
+<span class="plan-mark base-mark">A</span>
+<div>
+<span class="eyebrow">Referencia</span>
+<h2>Plan base</h2>
+</div>
+</div>
+<p class="small muted">Ingresa valores para una unidad que cumple calidad.</p>
+<label class="prod-field">
+<span>Masa de producto terminado por unidad</span>
+<div class="input-pair">
+<input data-label="Material base por unidad" name="base_material_kg" type="number" min="0.0001" max="100000" step="0.0001" required>
+<span>kg/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Electricidad por unidad</span>
+<div class="input-pair">
+<input data-label="Electricidad base por unidad" name="base_energy_kwh" type="number" min="0" max="1000000" step="0.001" required>
+<span>kWh</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Agua por unidad</span>
+<div class="input-pair">
+<input data-label="Agua base por unidad" name="base_water_l" type="number" min="0" max="1000000" step="0.001" required>
+<span>L</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Tiempo de máquina</span>
+<div class="input-pair">
+<input data-label="Tiempo de máquina base" name="base_time_min" type="number" min="0" max="100000" step="0.1" required>
+<span>min/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Material perdido o rechazado</span>
+<div class="input-pair">
+<input data-label="Residuo base" name="base_scrap_pct" type="number" min="0" max="95" step="0.1" required>
+<span>% del material que entra</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio del material</span>
+<div class="input-pair">
+<input data-label="Precio del material base" name="base_material_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio de venta previsto</span>
+<div class="input-pair">
+<input data-label="Precio de venta base" name="base_sale_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<details class="plan-advanced">
+<summary>Costos adicionales por unidad</summary>
+<label class="prod-field">
+<span>Mano de obra por unidad</span>
+<div class="input-pair">
+<input data-label="Mano de obra base" name="base_labor_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Empaque por unidad</span>
+<div class="input-pair">
+<input data-label="Empaque base" name="base_packaging_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Transporte por unidad</span>
+<div class="input-pair">
+<input data-label="Transporte base" name="base_transport_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Mantenimiento de máquina</span>
+<div class="input-pair">
+<input data-label="Mantenimiento base" name="base_maintenance_cop_h" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/hora</span>
+</div>
+</label>
+</details>
+</article>
+  <article class="card plan-card alt-plan">
+<div class="plan-title">
+<span class="plan-mark alt-mark">B</span>
+<div>
+<span class="eyebrow">Propuesta</span>
+<h2>Alternativa</h2>
+</div>
+</div>
+<p class="small muted">Usa la misma cantidad del plan base y cambia solo lo que estás comparando.</p>
+<label class="prod-field">
+<span>Masa de producto terminado por unidad</span>
+<div class="input-pair">
+<input data-label="Material alternativo por unidad" name="alt_material_kg" type="number" min="0.0001" max="100000" step="0.0001" required>
+<span>kg/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Electricidad por unidad</span>
+<div class="input-pair">
+<input data-label="Electricidad alternativa por unidad" name="alt_energy_kwh" type="number" min="0" max="1000000" step="0.001" required>
+<span>kWh</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Agua por unidad</span>
+<div class="input-pair">
+<input data-label="Agua alternativa por unidad" name="alt_water_l" type="number" min="0" max="1000000" step="0.001" required>
+<span>L</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Tiempo de máquina</span>
+<div class="input-pair">
+<input data-label="Tiempo de máquina alternativo" name="alt_time_min" type="number" min="0" max="100000" step="0.1" required>
+<span>min/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Material perdido o rechazado</span>
+<div class="input-pair">
+<input data-label="Residuo alternativo" name="alt_scrap_pct" type="number" min="0" max="95" step="0.1" required>
+<span>% del material que entra</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio del material</span>
+<div class="input-pair">
+<input data-label="Precio del material alternativo" name="alt_material_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/kg</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Precio de venta previsto</span>
+<div class="input-pair">
+<input data-label="Precio de venta alternativo" name="alt_sale_price" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<details class="plan-advanced">
+<summary>Costos adicionales por unidad</summary>
+<label class="prod-field">
+<span>Mano de obra por unidad</span>
+<div class="input-pair">
+<input data-label="Mano de obra alternativa" name="alt_labor_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Empaque por unidad</span>
+<div class="input-pair">
+<input data-label="Empaque alternativo" name="alt_packaging_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Transporte por unidad</span>
+<div class="input-pair">
+<input data-label="Transporte alternativo" name="alt_transport_cop" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/unidad</span>
+</div>
+</label>
+<label class="prod-field">
+<span>Mantenimiento de máquina</span>
+<div class="input-pair">
+<input data-label="Mantenimiento alternativo" name="alt_maintenance_cop_h" type="number" min="0" max="1000000000" step="100" required>
+<span>COP/hora</span>
+</div>
+</label>
+</details>
+</article>
+</section>
+  <section class="card empty-state" data-production-empty>
+<span class="eyebrow">Empieza aquí</span>
+<h2>Completa tus datos o carga un ejemplo</h2>
+<p>Las entradas deben corresponder a tu producto y a una unidad terminada. Al calcular, los resultados aparecen abajo con consumos, costo total, precio sugerido y comparación.</p>
+<button class="button primary" type="button" data-empty-preset>Cargar ejemplo sintético en COP</button>
+</section>
+  <section class="section" data-production-results hidden>
+<article class="card production-decision" data-production-decision>
+</article>
+<section class="calc-flow" data-calc-flow aria-label="Etapas del cálculo">
+<article class="flow-step">
+<span>01 · Pedido</span>
+<strong data-flow-order>
+</strong>
+</article>
+<article class="flow-step">
+<span>02 · Material</span>
+<strong data-flow-material>
+</strong>
+</article>
+<article class="flow-step">
+<span>03 · Recursos</span>
+<strong data-flow-resources>
+</strong>
+</article>
+<article class="flow-step">
+<span>04 · Costos y precio</span>
+<strong data-flow-price>
+</strong>
+</article>
+</section>
+    <div class="prod-kpis" data-production-kpis>
+</div>
+    <div class="grid g2 prod-charts">
+<article class="card">
+<div class="section-head">
+<div>
+<span class="eyebrow">Consumo del lote</span>
+<h2>Recursos e impacto</h2>
+</div>
+</div>
+<div data-resource-chart>
+</div>
+<p class="chart-caption">Cada fila usa su propia escala; compara base y alternativa dentro de la misma unidad.</p>
+</article>
+<article class="card">
+<div class="section-head">
+<div>
+<span class="eyebrow">Desglose de costos</span>
+<h2>¿En qué se gasta?</h2>
+</div>
+</div>
+<div data-cost-chart>
+</div>
+<details class="cost-detail">
+<summary>Ver cada rubro de costo</summary>
+<div data-cost-detail>
+</div>
+</details>
+</article>
+</div>
+    <div class="grid g2">
+<article class="card">
+<h2>Precio y margen bruto estimado</h2>
+<div class="sale-results" data-sale-results>
+</div>
+<p class="small muted">Margen = (precio de venta − costo total por unidad) / precio de venta. Incluye los costos ingresados; impuestos, devoluciones y costos financieros se excluyen.</p>
+</article>
+<article class="card">
+<h2>Huella de carbono (opcional)</h2>
+<div data-emissions>
+</div>
+<p class="small muted">Se calcula con los factores que ingreses: energía + material + agua. Sin fuente de factores no se estima CO₂e.</p>
+</article>
+</div>
+  </section>
+  <details class="card production-method">
+<summary>Ver fórmulas y de dónde salen las variables</summary>
+<div class="method-content">
+<p>El modelo es un balance de producción/costos: usa datos de consumo por unidad que se miden, se estiman con una ficha técnica o se cargan desde CSV. Multiplica esas tasas por las unidades del lote y hace explícito el desperdicio.</p>
+<ul>
+<li>Producto terminado = cantidad × masa neta por unidad.</li>
+<li>Material de entrada = masa del producto / (1 − residuo%). Residuo = entrada − producto terminado.</li>
+<li>Energía, agua y máquina = consumo por unidad × cantidad (tiempo de máquina convertido a horas).</li>
+<li>Costo total estimado = materia prima + energía + agua + máquina + mano de obra + empaque + transporte + mantenimiento + disposición de residuos + costos indirectos.</li>
+<li>Costo total unitario = costo total del lote / cantidad.</li>
+<li>Margen bruto estimado = (precio de venta − costo total por unidad) / precio de venta.</li>
+</ul>
+<p>Precio sugerido = costo total unitario / (1 − margen objetivo). El cálculo no inventa una predicción de ML; se puede calibrar con históricos reales de producción.</p>
+<p>En la infografía de impresión 3D se identifican variables de diseño como espesor de capa, contornos, relleno, patrón y orientación; las salidas estudiadas incluyen energía, tiempo, masa final y scrap. Esos antecedentes no traen las filas de datos ni los coeficientes del producto BioTech, por eso aquí se capturan tasas unitarias y se comparan con transparencia.</p>
+<a href="documentacion.html#modelo">Ver contexto, supuestos y datos faltantes para IA →</a>
+</div>
+</details>
+  <p class="small muted">Ubicación/fuente: <span data-location-summary>sin especificar</span>. Ejemplo genérico sintético en COP, editable. Cálculos de planificación; no son cotización ni medición real. Último cálculo: <span data-produced-at>
+</span>
+</p>
+</div>
+</section>
+</section>
+<section id="simulador" class="app-view wrap" data-simulator data-architecture="all" data-active-architecture="monolith">
+<section class="hero hero-compact"><div class="eyebrow">Arquitectura elegida para BioTech · Monolito</div><h1>¿Por qué elegimos Monolito?</h1><p>BioTech se organiza como una sola aplicación modular. Aquí puedes comparar el Monolito con Microservicios y Eventos para entender cuándo tendría sentido cambiar de arquitectura.</p></section>
+<section class="architecture-focus card"><div class="section-head"><div><span class="eyebrow">Explora las alternativas</span><h2 data-architecture-name>Monolito</h2></div><span class="pill" data-architecture-status>Elegida para BioTech</span></div><div class="architecture-pickers" role="group" aria-label="Seleccionar arquitectura para ver sus detalles"><button type="button" class="architecture-pick" data-architecture-card="monolith" aria-pressed="true">Monolito</button><button type="button" class="architecture-pick" data-architecture-card="microservices" aria-pressed="false">Microservicios</button><button type="button" class="architecture-pick" data-architecture-card="events" aria-pressed="false">Eventos</button></div><p data-architecture-description>Una sola aplicación integra los módulos del proyecto.</p><div class="architecture-tradeoffs"><p><strong>Ventaja:</strong> <span data-architecture-pro></span></p><p><strong>Limitación:</strong> <span data-architecture-con></span></p></div></section>
+<section class="sim-layout section">
+<aside class="card control-panel"><div class="section-head"><div><span class="eyebrow">01 · Configuración</span><h2>Variables</h2></div><span class="pill" data-run-state>Resultado calculado</span></div>
+<div class="controls compact-controls">
+<div class="control"><label for="users-n">Solicitudes al backend por segundo</label><div class="input-pair"><input id="users-n" data-label="Solicitudes al backend por segundo" name="users" type="number" min="10" max="1000" step="10" value="150" required><span>req/s</span></div><input aria-label="Ajustar solicitudes al backend por segundo" name="users" type="range" min="10" max="1000" step="10" value="150"><small>Carga hipotética para comparar Monolito, Microservicios y Eventos; el prototipo actual no tiene backend.</small></div>
+<div class="control"><label for="data-n">Datos por solicitud</label><div class="input-pair"><input id="data-n" data-label="Datos por solicitud" name="data" type="number" min="1" max="100" step="1" value="25" required><span>MB</span></div><input aria-label="Ajustar datos por solicitud" name="data" type="range" min="1" max="100" step="1" value="25"></div>
+<div class="control"><label for="complexity">Factor de trabajo por solicitud</label><select id="complexity" name="complexity"><option value="1">Bajo · 1,0×</option><option value="1.5" selected>Medio · 1,5×</option><option value="2.5">Alto · 2,5×</option></select><small>Supuesto para el cálculo de capacidad; no representa IA ni una medición del algoritmo de producción.</small></div>
+<div class="control"><label for="budget-n">Presupuesto mensual</label><div class="input-pair"><input id="budget-n" data-label="Presupuesto mensual" name="budget" type="number" min="400000" max="40000000" step="200000" value="5000000" required><span>COP/mes</span></div><input aria-label="Ajustar presupuesto mensual" name="budget" type="range" min="400000" max="40000000" step="200000" value="5000000"></div>
+</div>
+<div class="button-row"><button class="button primary run-button" type="button" data-run>Calcular escenario</button><button class="button subtle" type="button" data-reset>Restablecer</button></div><div data-input-errors hidden aria-live="polite"></div>
+<div class="preset-block"><div class="preset-title"><strong>Escenarios predefinidos</strong><span class="small muted">cargar + calcular</span></div><div class="scenarios"><button class="scenario-btn" data-scenario="base">Base</button><button class="scenario-btn" data-scenario="peak">Pico sensores</button><button class="scenario-btn" data-scenario="heavy">Masivo</button><button class="scenario-btn" data-scenario="academic">Académico</button><button class="scenario-btn" data-scenario="industrial">Industrial</button></div></div>
+<details class="csv-loader"><summary>Cargar variables desde CSV</summary><p class="small muted">Sube un CSV con las columnas de escenarios del proyecto. Puedes seleccionar una fila, cambiar sus valores y calcular.</p><label class="button file-button" for="csv-file">Elegir archivo CSV</label><input id="csv-file" data-csv-input type="file" accept=".csv,text/csv"><div data-csv-box hidden><label for="csv-row">Escenario del archivo</label><select id="csv-row" data-csv-scenario></select><p class="small muted" data-csv-message></p><button class="button" data-load-csv-row type="button">Cargar variables</button></div><p class="small"><a href="datos/escenarios_modelo.csv" download>Descargar plantilla de escenarios</a></p></details></aside>
+<section class="results-column"><div class="recommendation card" data-recommendation></div><div class="alert-box"><h2>Estado del SLA</h2><div data-alerts aria-live="polite"></div></div>
+<section class="card visual-card"><div class="section-head"><div><span class="eyebrow">02 · Comparación visual</span><h2>Puntaje por arquitectura</h2></div><span class="pill">0–100 · más alto es mejor</span></div><p class="small muted">Latencia, capacidad de crecimiento, disponibilidad y economía relativa.</p><div data-score-chart></div></section>
+<div class="grid g2 visual-pair"><section class="card visual-card"><div class="section-head"><div><span class="eyebrow">Tiempo de respuesta</span><h2>Latencia estimada</h2></div></div><div data-latency-chart></div><p class="chart-caption">La línea marca el SLA de 200 ms.</p></section><section class="card visual-card"><div class="section-head"><div><span class="eyebrow">Recursos</span><h2>Capacidad estimada</h2></div></div><div data-capacity-chart></div></section></div>
+<section class="card compact-table"><details><summary>Ver tabla completa de indicadores</summary><div data-comparison></div></details></section>
+<details class="card model-note"><summary>¿Cómo calcula el modelo?</summary><p>Usa teoría de colas M/M/c: solicitudes aleatorias, tiempo de servicio exponencial y varias unidades de procesamiento. Las tasas, costos y disponibilidades por arquitectura son parámetros conceptuales que se pueden calibrar con mediciones reales.</p><a href="documentacion.html#modelo">Ver ecuaciones, supuestos y casos de sustentación →</a></details>
+<section class="card current-architecture" aria-labelledby="current-arch-title"><div class="section-head"><div><span class="eyebrow">Decisión de arquitectura</span><h2 id="current-arch-title">Monolito modular para BioTech</h2></div><span class="pill">Arquitectura elegida</span></div><p>BioTech reúne producción, comparación de arquitecturas, validación de datos y gráficas en una sola aplicación y un solo despliegue. Sus módulos comparten código y se publican juntos; no son servicios independientes ni hay un intermediario de eventos. En esta versión, JavaScript ejecuta los cálculos en el navegador y GitHub Pages aloja los archivos estáticos.</p><h3>Flujo de entradas y salidas</h3><div class="flow-steps"><div><strong>1 · Entradas</strong><span>Producto, lote, material, desperdicio, consumos, tiempos, tarifas y costos.</span></div><div><strong>2 · Módulo integrado</strong><span>El motor de producción valida y calcula dentro del mismo monolito.</span></div><div><strong>3 · Salidas</strong><span>Material requerido, residuos, energía, agua, costo, precio sugerido y margen.</span></div></div><p>El escenario editable <span data-current-workload>150 solicitudes/seg · 25 MB por solicitud · carga 1,5× · presupuesto COP 5.000.000/mes</span> representa una posible demanda de la plataforma; no es telemetría del cálculo actual. El modelo M/M/c compara servidores hipotéticos para Monolito, Microservicios y Eventos. La aplicación actual no tiene cola de backend, así que no se confunden sus tiempos locales con latencia de servidor.</p><div class="table-scroll"><table><thead><tr><th>Criterio</th><th>Monolito elegido</th><th>Microservicios</th><th>Eventos</th></tr></thead><tbody><tr><td>Organización</td><td>Todos los módulos BioTech en una aplicación</td><td>Servicios independientes por función</td><td>Procesadores separados activados por eventos</td></tr><tr><td>Entradas y salidas</td><td>Formulario de producción → recursos, costos y margen</td><td>La misma operación, distribuida entre servicios</td><td>La misma operación, procesada de forma asíncrona</td></tr><tr><td>Despliegue</td><td>Una versión coordinada y sencilla de publicar</td><td>Varios servicios que se pueden publicar por separado</td><td>Consumidores y cola requieren configuración propia</td></tr><tr><td>Ajuste al alcance actual</td><td>Alto: prototipo académico, equipo pequeño y sin demanda medida</td><td>Bajo: complejidad operativa sin necesidad demostrada</td><td>Bajo: no hay flujos asíncronos ni picos medidos que lo justifiquen</td></tr><tr><td>Límite principal</td><td>Crece como conjunto; esta versión no persiste datos</td><td>Más costos de comunicación, monitoreo y operación</td><td>Resultados pueden ser diferidos y requieren trazabilidad de eventos</td></tr></tbody></table></div><p class="current-verdict"><strong>Por qué elegimos Monolito:</strong> es suficiente para resolver el flujo completo de BioTech, mantiene juntas las entradas, el cálculo y los resultados, y permite demostrarlo con un único despliegue. Si luego aparecen requisitos medidos de persistencia compartida, escalado independiente o procesamiento asíncrono, se puede reevaluar la decisión. La recomendación numérica de la parte superior se refiere solo al escenario de backend simulado, no cambia esta decisión de alcance.</p><a href="documentacion.html#arquitecturas">Ver el modelo, la decisión y sus supuestos →</a></section>
+</section></section></section>
+</main><footer class="foot"><div class="wrap">BioTech · Aplicación Monolito modular · <a href="documentacion.html">Modelo y documentación</a></div></footer>
+<script src="assets/production.js?v=20261025-8"></script>
+<script src="assets/simulator.js?v=20261025-8"></script>
+<script src="assets/app.js?v=20261025-8"></script></body></html>
