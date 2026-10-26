@@ -44,7 +44,7 @@
 .compare-series>span{color:var(--muted)}
 .compare-series>strong{text-align:right;font-size:.76rem;white-space:nowrap}
 .compare-track{height:13px;background:#081418;border:1px solid #29434a;border-radius:99px;overflow:hidden}
-.prod-bar{height:100%;min-width:3px;border-radius:99px}
+.prod-bar{display:block;height:100%;min-width:3px;border-radius:99px}
 .prod-bar.base{background:linear-gradient(90deg,#d89c32,#ffd078)}
 .prod-bar.alt{background:linear-gradient(90deg,#13a579,#6de5ba)}
 .delta{font-size:.78rem;text-align:right;white-space:nowrap}
