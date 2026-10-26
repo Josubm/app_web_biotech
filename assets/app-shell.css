@@ -16,3 +16,36 @@
 .architecture-pick:focus-visible{outline:3px solid #8ce9c7;outline-offset:2px}
 @media(max-width:1040px){.prod-charts,.production-app [data-production-results]>.grid.g2{grid-template-columns:1fr}.sale-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.app-view{min-height:0}.prod-layout{gap:12px}.prod-controls .prod-field .input-pair{grid-template-columns:minmax(0,1fr) auto}.sale-results{grid-template-columns:1fr}.sale-plan{grid-template-columns:minmax(0,1fr) minmax(95px,auto)}.prod-kpi strong{font-size:.85rem}}
+/* Interfaz operativa del monolito */
+.app-view{background:#091317}.top{background:rgba(9,19,23,.98)}.nav{min-height:72px}.brand{letter-spacing:0}.brand-mark{border-radius:8px}
+.links a{border-radius:6px}.links a.active{border-color:#45d6b0;background:#153a32}
+.app-view .hero{padding:48px 0 32px;border-bottom:1px solid #29434a}.app-view .hero h1{max-width:780px;letter-spacing:0;font-size:clamp(2.2rem,4vw,3.8rem)}
+.app-view .hero .eyebrow{letter-spacing:.08em}.app-view .hero-actions .button{border-radius:6px;font-weight:750}
+.app-view .card{border-radius:8px;box-shadow:none}.app-view .button{border-radius:6px}.app-view .section{padding:28px 0}.app-view .section-title{letter-spacing:0}
+.app-view .grid.g2,.app-view .grid.g4{gap:12px}.app-view .arch{min-height:190px;border-top:1px solid #29434a}.app-view .badge{letter-spacing:.02em}.app-view .callout{border-radius:0}
+.architecture-focus{border-left:3px solid #45d6b0}.architecture-focus .section-head{align-items:flex-start}.architecture-pickers{gap:6px}.architecture-pick{border-radius:6px;padding:8px 13px}.architecture-tradeoffs{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.architecture-tradeoffs p{border:1px solid #29434a;border-radius:6px;background:#0c1b20}
+.prod-controls,.control-panel{border-radius:8px}.section-head h2{letter-spacing:0}.prod-kpi,.metric,.visual-card,.recommendation{border-radius:8px}.prod-layout{gap:14px}.plan-card{border-radius:8px}.plan-title{border-bottom:1px solid #29434a;padding-bottom:10px;margin-bottom:12px}
+.table-scroll{border-radius:6px}.financial-table-wrap{border-radius:6px}.financial-table th,.financial-table td{letter-spacing:0}
+.current-architecture{border-left:3px solid #45d6b0}.flow-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.flow-steps>div{min-width:0;border:1px solid #29434a;border-radius:6px;padding:12px;background:#0c1b20}.flow-steps strong,.flow-steps span{display:block}.flow-steps span{margin-top:5px;color:var(--muted,#abc0ba);font-size:.78rem;line-height:1.45}
+@media(max-width:700px){.app-view .hero{padding:36px 0 28px}.app-view .hero h1{font-size:2.15rem}.app-view .arch{min-height:0}.flow-steps{grid-template-columns:1fr}.architecture-tradeoffs{grid-template-columns:1fr}}
+/* Identidad visual unificada para la aplicación monolítica */
+body{background:#091317}
+.top{background:rgba(9,19,23,.96);border-bottom-color:#29434a}
+.brand{letter-spacing:0}
+.brand-mark{border-radius:8px}
+.nav{min-height:72px}
+.links a{border-radius:7px;font-weight:650}
+.app-view .hero{position:relative;max-width:none;padding-top:54px;padding-bottom:38px;border-bottom:1px solid #29434a}
+.app-view .hero h1{max-width:760px;font-size:clamp(2.25rem,5vw,4rem);letter-spacing:0}
+.app-view .hero p{max-width:760px}
+.app-view .button{border-radius:7px;min-height:40px}
+.app-view .card{border-radius:8px;box-shadow:none}
+.app-view .section{padding-top:28px;padding-bottom:28px}
+.app-view .section-title{letter-spacing:0}
+.app-view .eyebrow{letter-spacing:.08em}
+.app-view .grid.g2,.app-view .grid.g4{gap:12px}
+.app-view .hero-actions .button{font-weight:750}
+.app-view .arch{min-height:210px}
+.app-view .badge{letter-spacing:.02em}
+.app-view .callout{border-radius:0}
+@media(max-width:620px){.nav{min-height:64px}.app-view .hero{padding-top:36px;padding-bottom:28px}.app-view .hero h1{font-size:2.15rem}.app-view .arch{min-height:0}.links{gap:4px}}
