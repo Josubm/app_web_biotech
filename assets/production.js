@@ -1,3 +1,4 @@
+
 (() => {
   const DEMO = {
     product: '', location: '', data_source: '', quantity: 100,
@@ -37,7 +38,7 @@
   }
   function percentChange(base,alt){if(base===0)return alt===0?'0%':'Nuevo';return `${fmt((alt-base)/base*100,1)}%`}
   function comparisonChart(rows){
-    return `<div class="compare-bars">${rows.map(r=>{const max=Math.max(r.base,r.alt,1e-9);return `<div class="compare-row"><div class="compare-label"><strong>${r.label}</strong><span>${r.money?cop(r.base):`${fmt(r.base,r.digits??2)} ${r.unit}`} <i>base</i> · ${r.money?cop(r.alt):`${fmt(r.alt,r.digits??2)} ${r.unit}`} <i>alternativa</i></span></div><div class="paired-bars"><div class="prod-bar base" style="width:${clamp(r.base/max*100,0,100)}%" title="Base: ${r.money?cop(r.base):`${fmt(r.base)} ${r.unit}`}"></div><div class="prod-bar alt" style="width:${clamp(r.alt/max*100,0,100)}%" title="Alternativa: ${r.money?cop(r.alt):`${fmt(r.alt)} ${r.unit}`}"></div></div><strong class="delta ${r.alt<=r.base?'good':'bad'}">${percentChange(r.base,r.alt)}</strong></div>`}).join('')}</div>`;
+    return `<div class="compare-bars">${rows.map(r=>{const max=Math.max(r.base,r.alt,1e-9),baseLabel=r.money?cop(r.base):`${fmt(r.base,r.digits??2)} ${r.unit}`,altLabel=r.money?cop(r.alt):`${fmt(r.alt,r.digits??2)} ${r.unit}`;return `<div class="compare-row"><div class="compare-row-head"><strong>${r.label}</strong><span class="delta ${r.alt<=r.base?'good':'bad'}">${percentChange(r.base,r.alt)} vs. base</span></div><div class="compare-series"><span>Plan base</span><div class="compare-track" role="img" aria-label="${r.label}, plan base: ${baseLabel}"><i class="prod-bar base" style="width:${clamp(r.base/max*100,0,100)}%"></i></div><strong>${baseLabel}</strong></div><div class="compare-series"><span>Alternativa</span><div class="compare-track" role="img" aria-label="${r.label}, alternativa: ${altLabel}"><i class="prod-bar alt" style="width:${clamp(r.alt/max*100,0,100)}%"></i></div><strong>${altLabel}</strong></div></div>`}).join('')}</div>`;
   }
   function evaluate(b,a){
     const rows=[['material de entrada',b.rawMaterial,a.rawMaterial],['electricidad',b.energy,a.energy],['agua',b.water,a.water],['residuo',b.waste,a.waste],['costo total',b.totalCost,a.totalCost]];
@@ -50,20 +51,16 @@
   }
   function validate(root){
     const errors=[];
-    root.querySelectorAll('input[type=number][required]').forEach(el=>{
-      const n=Number(el.value);
-      const min=el.min===''?-Infinity:Number(el.min);
-      const max=el.max===''?Infinity:Number(el.max);
-      const invalid=!el.value.trim()||!Number.isFinite(n)||n<min||n>max;
-      if(invalid)errors.push(`${el.dataset.label||el.name}: ingresa un valor entre ${el.min || '0'} y ${el.max || 'el límite permitido'}.`);
-    });
-    const msg=root.querySelector('[data-production-errors]');msg.innerHTML=errors.map(e=>`<div class="notice danger">${esc(e)}</div>`).join('');msg.hidden=errors.length===0;return errors.length===0;
+    root.querySelectorAll('input[type=number][required]').forEach(el=>{const n=Number(el.value),min=Number(el.min),max=Number(el.max),step=Number(el.step)||1;const invalid=!el.value||!Number.isFinite(n)||n<min||n>max||Math.abs((n-min)/step-Math.round((n-min)/step))>1e-8;el.classList.toggle('invalid',invalid);el.setAttribute('aria-invalid',String(invalid));if(invalid){const panel=el.closest('details');if(panel)panel.open=true;errors.push(el.dataset.label||el.name)}});
+    const msg=root.querySelector('[data-production-errors]'),shown=errors.slice(0,5),extra=errors.length-shown.length;msg.innerHTML=errors.length?`<div class="notice danger"><strong>Revisa ${errors.length} campo(s):</strong> ${shown.map(esc).join(', ')}${extra>0?` y ${extra} más`:''}.</div>`:'';msg.hidden=errors.length===0;if(errors.length){const first=root.querySelector('input[aria-invalid="true"]');if(first){first.focus({preventScroll:true});first.scrollIntoView({behavior:'smooth',block:'center'})}}return errors.length===0;
   }
   function render(root){
-    const p=readInputs(root),base=calculate(p,'base'),alt=calculate(p,'alt'),decision=evaluate(base,alt),product=p.product||'Producto personalizado';
-    root.querySelector('[data-product-name]').textContent=product;root.querySelector('[data-location-summary]').textContent=[p.location,p.dataSource].filter(Boolean).join(' · ')||'Ejemplo sintético (sin municipio ni fuente)';
+    const p=readInputs(root),base=calculate(p,'base'),alt=calculate(p,'alt'),decision=evaluate(base,alt),product=p.product||'Producto sin nombre';
+    root.querySelector('[data-production-empty]').hidden=true;root.querySelector('[data-production-results]').hidden=false;
+    root.querySelector('[data-product-name]').textContent=product;root.querySelector('[data-location-summary]').textContent=[p.location,p.dataSource].filter(Boolean).join(' · ')||'Sin municipio ni fuente';
+    const flow=root.querySelector('[data-calc-flow]');flow.dataset.animated='false';flow.querySelector('[data-flow-order]').textContent=`${fmt(p.quantity,0)} unidades · ${product}`;flow.querySelector('[data-flow-material]').textContent=`Base ${fmt(base.rawMaterial)} kg → alternativa ${fmt(alt.rawMaterial)} kg`;flow.querySelector('[data-flow-resources]').textContent=`Energía ${fmt(base.energy)} / ${fmt(alt.energy)} kWh · agua ${fmt(base.water)} / ${fmt(alt.water)} L`;flow.querySelector('[data-flow-price]').textContent=`Costo ${cop(base.totalCost)} / ${cop(alt.totalCost)} · precio objetivo ${cop(base.suggestedSalePrice)} / ${cop(alt.suggestedSalePrice)}`;requestAnimationFrame(()=>flow.dataset.animated='true');
     root.querySelector('[data-production-decision]').innerHTML=`<span class="eyebrow">Comparación para ${esc(product)}</span><h2>${decision.title}</h2><p>${decision.body}</p><div class="result-tags"><span>${alt.unitCost<=base.unitCost?'Menor':'Mayor'} costo por unidad: ${cop(Math.abs(alt.unitCost-base.unitCost))}</span><span>${alt.energy<=base.energy?'Menos':'Más'} energía: ${fmt(Math.abs(alt.energy-base.energy))} kWh/lote</span><span>${alt.rawMaterial<=base.rawMaterial?'Menos':'Más'} material: ${fmt(Math.abs(alt.rawMaterial-base.rawMaterial))} kg/lote</span></div>`;
-    const kpis=[['Costo total por unidad',base.unitCost,alt.unitCost,'COP/pieza',true],['Costo total del lote',base.totalCost,alt.totalCost,'COP',true],['Material de entrada',base.rawMaterial,alt.rawMaterial,'kg'],['Energía',base.energy,alt.energy,'kWh'],['Agua',base.water,alt.water,'L'],['Residuo estimado',base.waste,alt.waste,'kg'],['Tiempo de máquina',base.machineHours,alt.machineHours,'h']];
+    const kpis=[['Costo total por unidad',base.unitCost,alt.unitCost,'COP/unidad',true],['Costo total del lote',base.totalCost,alt.totalCost,'COP',true],['Material de entrada',base.rawMaterial,alt.rawMaterial,'kg'],['Energía',base.energy,alt.energy,'kWh'],['Agua',base.water,alt.water,'L'],['Residuo estimado',base.waste,alt.waste,'kg'],['Tiempo de máquina',base.machineHours,alt.machineHours,'h']];
     root.querySelector('[data-production-kpis]').innerHTML=kpis.map(([label,x,y,unit,money])=>`<article class="prod-kpi"><span>${label}</span><div><strong>${money?cop(x):fmt(x)} <small>base</small></strong><strong>${money?cop(y):fmt(y)} <small>alternativa</small></strong></div><em class="${y<=x?'good':'bad'}">${percentChange(x,y)} vs. base</em><small>${unit}</small></article>`).join('');
     root.querySelector('[data-resource-chart]').innerHTML=comparisonChart([{label:'Material de entrada',base:base.rawMaterial,alt:alt.rawMaterial,unit:'kg'},{label:'Electricidad',base:base.energy,alt:alt.energy,unit:'kWh'},{label:'Agua',base:base.water,alt:alt.water,unit:'L'},{label:'Residuo',base:base.waste,alt:alt.waste,unit:'kg'}]);
     root.querySelector('[data-cost-chart]').innerHTML=comparisonChart([
@@ -87,20 +84,17 @@
   }
   function mount(root){
     const demo=()=>fill(root,DEMO);
-    let liveTimer;
-    const updateLive=()=>{
-      clearTimeout(liveTimer);
-      liveTimer=setTimeout(()=>{if(validate(root)){render(root);root.querySelector('[data-production-run-state]').textContent='Actualización automática';}},220);
-    };
-    root.querySelectorAll('input,select').forEach(el=>{const dirty=()=>{const state=root.querySelector('[data-production-run-state]');state.textContent='Calculando cambios...';state.className='run-state pending';updateLive()};el.addEventListener('input',dirty);el.addEventListener('change',dirty)});
+    root.querySelectorAll('input,select').forEach(el=>{const dirty=()=>{const state=root.querySelector('[data-production-run-state]');state.textContent='Cambios pendientes · pulsa “Calcular lote”';state.className='run-state pending'};el.addEventListener('input',dirty);el.addEventListener('change',dirty)});
     root.querySelector('[data-production-run]').addEventListener('click',()=>{if(validate(root)){render(root);root.querySelector('[data-production-results]').scrollIntoView({behavior:'smooth',block:'start'})}});
-    root.querySelectorAll('[data-production-preset]').forEach(btn=>btn.addEventListener('click',()=>{const v={...DEMO};if(btn.dataset.productionPreset==='small')v.quantity=25;if(btn.dataset.productionPreset==='large')v.quantity=1000;fill(root,v);btn.classList.add('active');if(validate(root))render(root);root.querySelector('[data-production-results]').scrollIntoView({behavior:'smooth',block:'start'})}));
-    root.querySelector('[data-production-reset]').addEventListener('click',()=>{demo();render(root)});
-    root.querySelector('[data-bogota-tariffs]').addEventListener('click',()=>{$(root,'electricity_rate').value=1188.6328;$(root,'water_rate').value=11710.89;$(root,'location').value='Bogotá D.C.';$(root,'data_source').value='Servicios: Enel oct-2026 / EAAB abr-2026 (industrial); otros valores sintéticos';if(validate(root))render(root)});
+    const loadDemo=quantity=>{const v={...DEMO,quantity};fill(root,v);if(validate(root)){render(root);root.querySelector('[data-production-results]').scrollIntoView({behavior:'smooth',block:'start'})}};
+    root.querySelectorAll('[data-production-preset]').forEach(btn=>btn.addEventListener('click',()=>{const quantity=btn.dataset.productionPreset==='small'?25:btn.dataset.productionPreset==='large'?1000:100;btn.classList.add('active');loadDemo(quantity)}));
+    root.querySelector('[data-empty-preset]').addEventListener('click',()=>loadDemo(100));
+    root.querySelector('[data-production-reset]').addEventListener('click',()=>{root.querySelectorAll('input:not([type=file]),select').forEach(el=>{el.value='';el.classList.remove('invalid');el.removeAttribute('aria-invalid')});root.querySelectorAll('details').forEach(el=>el.open=false);root.querySelector('[data-production-errors]').hidden=true;root.querySelector('[data-production-results]').hidden=true;root.querySelector('[data-production-empty]').hidden=false;root.querySelector('[data-production-run-state]').textContent='Completa los datos';root.querySelector('[data-production-run-state]').className='run-state';root.querySelectorAll('[data-production-preset]').forEach(b=>b.classList.remove('active'))});
+    root.querySelector('[data-bogota-tariffs]').addEventListener('click',()=>{$(root,'electricity_rate').value=1188.6328;$(root,'water_rate').value=11710.89;$(root,'location').value='Bogotá D.C.';$(root,'data_source').value='Servicios: Enel oct-2026 / EAAB abr-2026 (industrial); otros valores sintéticos';root.querySelector('[data-production-run-state]').textContent='Tarifas de referencia cargadas';root.querySelector('[data-production-run-state]').className='run-state pending'});
     let rows=[];const file=root.querySelector('[data-production-csv]');
     file.addEventListener('change',async()=>{if(!file.files[0])return;try{rows=parseCsv(await file.files[0].text());const sel=root.querySelector('[data-production-csv-row]');sel.replaceChildren(...rows.map((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=r.product||`Fila ${i+1}`;return o}));root.querySelector('[data-production-csv-ready]').hidden=false;root.querySelector('[data-production-csv-message]').textContent=`${rows.length} fila(s) lista(s). Elige una y carga sus datos.`}catch(e){const box=root.querySelector('[data-production-errors]');box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`;box.hidden=false}});
-    root.querySelector('[data-load-production-csv]').addEventListener('click',()=>{const row=rows[Number(root.querySelector('[data-production-csv-row]').value)];if(!row)return;fill(root,row);if(validate(root))render(root)});
-    fill(root,DEMO);render(root);
+    root.querySelector('[data-load-production-csv]').addEventListener('click',()=>{const row=rows[Number(root.querySelector('[data-production-csv-row]').value)];if(!row)return;fill(root,row);if(validate(root)){render(root);root.querySelector('[data-production-results]').scrollIntoView({behavior:'smooth',block:'start'})}});
+    root.querySelector('[data-production-empty]').hidden=false;root.querySelector('[data-production-results]').hidden=true;
   }
   window.BioTechProduction={calculate,parseCsv,defaults:DEMO};
   document.querySelectorAll('[data-production-simulator]').forEach(mount);

@@ -64,10 +64,10 @@
   }
   function scoreChart(results){
     const metrics=[['Latencia',r=>r.latencyScore,'#39c89b'],['Escalabilidad',r=>r.scalability,'#58a6ff'],['Disponibilidad',r=>r.availabilityScore,'#bd91ff'],['Costo',r=>r.costScore,'#f2b84b']];
-    const W=760,left=145,right=30,plot=W-left-right, rowH=52, top=30, H=top+results.length*rowH+28;
-    let s=`<svg class="viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Comparación de puntajes normalizados del modelo, de cero a cien">`;
-    [0,25,50,75,100].forEach(v=>{const x=left+plot*v/100;s+=`<line x1="${x}" y1="${top-8}" x2="${x}" y2="${H-16}" class="gridline"/><text x="${x}" y="${H-2}" class="axis" text-anchor="middle">${v}</text>`});
-    results.forEach((r,i)=>{const y=top+i*rowH;s+=`<text x="${left-12}" y="${y+17}" class="chartlabel" text-anchor="end">${r.a.short}</text>`;metrics.forEach(([label,value,color],j)=>{const yy=y+j*9,w=plot*clamp(value(r),0,100)/100;s+=`<rect x="${left}" y="${yy}" width="${plot}" height="6" rx="3" class="barbg"/><rect x="${left}" y="${yy}" width="${w}" height="6" rx="3" fill="${color}"/><title>${r.a.short} · ${label}: ${fmt(value(r),1)}/100</title>`});});
+    const W=820,left=150,right=58,plot=W-left-right,rowH=66,top=34,H=top+results.length*rowH+30;
+    let s=`<svg class="viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Puntaje de cero a cien para latencia, escalabilidad, disponibilidad y costo por arquitectura">`;
+    [0,25,50,75,100].forEach(v=>{const x=left+plot*v/100;s+=`<line x1="${x}" y1="${top-9}" x2="${x}" y2="${H-18}" class="gridline"/><text x="${x}" y="${H-3}" class="axis" text-anchor="middle">${v}</text>`});
+    results.forEach((r,i)=>{const y=top+i*rowH;s+=`<text x="${left-12}" y="${y+20}" class="chartlabel" text-anchor="end">${r.a.short}</text>`;metrics.forEach(([label,value,color],j)=>{const yy=y+4+j*12,w=plot*clamp(value(r),0,100)/100;s+=`<rect x="${left}" y="${yy}" width="${plot}" height="8" rx="4" class="barbg"/><rect x="${left}" y="${yy}" width="${w}" height="8" rx="4" fill="${color}"/><text x="${left+plot+8}" y="${yy+8}" class="axis">${fmt(value(r),0)}</text><title>${r.a.short} · ${label}: ${fmt(value(r),1)}/100</title>`});});
     s+='</svg><div class="legend">'+metrics.map(([label,,color])=>`<span><i style="background:${color}"></i>${label}</span>`).join('')+'</div>';
     return s;
   }
